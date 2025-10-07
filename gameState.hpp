@@ -1,5 +1,5 @@
-#ifndef GAMESTATE.HPP
-#define GAMESTATE.HPP
+#ifndef GAMESTATE
+#define GAMESTATE
 
 #include <vector>
 
@@ -55,4 +55,4 @@ public:
     bool operator==(const gameState &other) const;
 };
 
-#endif
+#endif //GAMESTATE
