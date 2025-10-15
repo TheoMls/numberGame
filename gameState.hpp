@@ -22,30 +22,30 @@ private:
     void evaluate(int &heuristic);
 public:
     gameState(int dimension);
-    gameState(std::vector<std::vector<int>> board): board(board){};
+    gameState(std::vector<std::vector<int>> board);
 
     void print();
 
     std::vector<int> to1D() const;
     bool isSolvable() const;
     
-    const std::vector<std::vector<int>> &getBoard() const;
-    void setBoard(const std::vector<std::vector<int>> &board);
+    const std::vector<std::vector<int>> &getBoard() const { return board; };
+    void setBoard(const std::vector<std::vector<int>> &board) { this->board = board; };
 
-    int getDimension() const;
-    void setDimension(int n);
+    int getDimension() const { return dimension; };
+    void setDimension(int n) { this->dimension = n; };
 
-    int getEmptyTileColumn() const;
-    void setEmptyTileColumn(int y);
+    int getEmptyTileColumn() const { return emptyTileColumn; };
+    void setEmptyTileColumn(int y) { this->emptyTileColumn = y; };
     
-    int getEmptyTileRow() const;
-    void setEmptyTileRow(int x);
+    int getEmptyTileRow() const { return emptyTileRow; };
+    void setEmptyTileRow(int x) { this->emptyTileRow = x; };
 
-    gameState *getParent() const;
-    void setParent(gameState *parent);
+    gameState *getParent() const {return this->parent; };
+    void setParent(gameState *parent) {this->parent = parent; };
 
-    int getScore() const;
-    void setScore(int s);
+    int getScore() const {return score; };
+    void setScore(int s) {this->score = s; };
 
     std::vector<gameState*> getChildren() const;
 

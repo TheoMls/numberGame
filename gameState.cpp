@@ -26,9 +26,25 @@ gameState::gameState(int dimension) : dimension(dimension){
             int row = i / dimension;
             int column = i % dimension;
             board[row][column] = board1d[i];
+            if (board1d[i] == 0) {
+                emptyTileRow = row;
+                emptyTileColumn = column;    
+            }
         }
 
     } while (!isSolvable());
+}
+
+gameState::gameState(std::vector<std::vector<int>> board): board(board){
+    dimension = board.size();
+    for (size_t x = 0; x < dimension; x++){
+        for (size_t y = 0; y < dimension; y++){
+            if (board[x][y] == 0) {
+                emptyTileRow = x;
+                emptyTileColumn = y;    
+            }
+        }
+    }
 }
 
 void gameState::print(){
