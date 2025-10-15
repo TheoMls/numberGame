@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <tuple>
 #include "gameState.hpp"
 #include "inversionsCounter.hpp"
 
@@ -26,25 +27,19 @@ gameState::gameState(int dimension) : dimension(dimension){
             int row = i / dimension;
             int column = i % dimension;
             board[row][column] = board1d[i];
-            if (board1d[i] == 0) {
-                emptyTileRow = row;
-                emptyTileColumn = column;    
-            }
         }
 
     } while (!isSolvable());
+    std::tuple<int, int> emptyTile = findEmptyTilePos();
+    emptyTileRow = get<0>(emptyTile);
+    emptyTileColumn = get<1>(emptyTile);
 }
 
 gameState::gameState(std::vector<std::vector<int>> board): board(board){
     dimension = board.size();
-    for (size_t x = 0; x < dimension; x++){
-        for (size_t y = 0; y < dimension; y++){
-            if (board[x][y] == 0) {
-                emptyTileRow = x;
-                emptyTileColumn = y;    
-            }
-        }
-    }
+    std::tuple<int, int> emptyTile = findEmptyTilePos();
+    emptyTileRow = get<0>(emptyTile);
+    emptyTileColumn = get<1>(emptyTile);
 }
 
 void gameState::print(){
@@ -81,4 +76,24 @@ bool gameState::isSolvable() const{
     int inversions;
     inversions = inversionCount(flatBoard);
     return inversions % 2 == 0;
+}
+
+std::tuple<int, int> gameState::findEmptyTilePos() {
+    std::tuple<int, int> emptyTile;
+    for (size_t x = 0; x < dimension; x++){
+        for (size_t y = 0; y < dimension; y++){
+            if (board[x][y] == 0) {
+                emptyTile = std::make_tuple(x,y);   
+            }
+        }
+    }
+    return emptyTile;
+}
+
+void gameState::setBoard(const std::vector<std::vector<int>> &board){
+    this->board = board;
+    dimension = board.size();
+    std::tuple<int, int> emptyTile = findEmptyTilePos();
+    setEmptyTileRow(get<0>(emptyTile));
+    setEmptyTileColumn(get<1>(emptyTile));
 }

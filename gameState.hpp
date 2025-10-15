@@ -2,6 +2,7 @@
 #define GAMESTATE_HPP
 
 #include <vector>
+#include <tuple>
 
 class gameState {
 private:
@@ -28,12 +29,14 @@ public:
 
     std::vector<int> to1D() const;
     bool isSolvable() const;
+
+    std::tuple<int, int> findEmptyTilePos();
     
     const std::vector<std::vector<int>> &getBoard() const { return board; };
-    void setBoard(const std::vector<std::vector<int>> &board) { this->board = board; };
+    void setBoard(const std::vector<std::vector<int>> &board);
 
     int getDimension() const { return dimension; };
-    void setDimension(int n) { this->dimension = n; };
+    //void setDimension(int n) { this->dimension = n; };
 
     int getEmptyTileColumn() const { return emptyTileColumn; };
     void setEmptyTileColumn(int y) { this->emptyTileColumn = y; };
@@ -43,11 +46,11 @@ public:
 
     gameState *getParent() const {return this->parent; };
     void setParent(gameState *parent) {this->parent = parent; };
-
+    
+    std::vector<gameState*> getChildren() const;
+    
     int getScore() const {return score; };
     void setScore(int s) {this->score = s; };
-
-    std::vector<gameState*> getChildren() const;
 
     bool moveUp(), moveDown(), moveLeft(), moveRight();
     
