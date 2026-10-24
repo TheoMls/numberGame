@@ -15,7 +15,7 @@ gameState::gameState(int dimension) : dimension(dimension){
     // Fill board with numbers
     board = std::vector(dimension, std::vector<int>(dimension,0));
     std::vector<int> board1d;
-    for (size_t i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
         board1d.push_back(i);
     do{
         std::vector<int> board1d_solvable = board1d;
@@ -24,7 +24,7 @@ gameState::gameState(int dimension) : dimension(dimension){
         std::random_device rd;
         std::mt19937 g(rd());
         std::shuffle(board1d_solvable.begin(), board1d_solvable.end(), g);
-        for (size_t i = 0; i < size; i++){
+        for (int i = 0; i < size; i++){
             int row = i / dimension;
             int column = i % dimension;
             board[row][column] = board1d_solvable[i];
@@ -85,8 +85,8 @@ bool gameState::isSolvable() const {
 
 std::tuple<int, int> gameState::findEmptyTilePos() const{
     std::tuple<int, int> emptyTile;
-    for (size_t x = 0; x < dimension; x++){
-        for (size_t y = 0; y < dimension; y++){
+    for (int x = 0; x < dimension; x++){
+        for (int y = 0; y < dimension; y++){
             if (board[x][y] == 0) {
                 emptyTile = std::make_tuple(x,y);   
             }
