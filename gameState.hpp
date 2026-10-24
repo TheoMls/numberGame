@@ -36,7 +36,6 @@ public:
     void setBoard(const std::vector<std::vector<int>> &board);
 
     int getDimension() const { return dimension; };
-    //void setDimension(int n) { this->dimension = n; };
 
     int getEmptyTileColumn() const { return emptyTileColumn; };
     void setEmptyTileColumn(int y) { this->emptyTileColumn = y; };

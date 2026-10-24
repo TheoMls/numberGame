@@ -110,3 +110,19 @@ std::vector<gameState*> gameState::getChildren(){
 
     return children;
 }
+
+bool moveUp() {
+    return true;
+}
+
+bool moveDown() {
+    return true;
+}
+
+bool moveLeft() {
+    return true;
+}
+
+bool moveRight() {
+    return true;
+}
