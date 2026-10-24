@@ -30,7 +30,7 @@ public:
     std::vector<int> to1D() const;
     bool isSolvable() const;
 
-    std::tuple<int, int> findEmptyTilePos();
+    std::tuple<int, int> findEmptyTilePos() const;
     
     const std::vector<std::vector<int>> &getBoard() const { return board; };
     void setBoard(const std::vector<std::vector<int>> &board);
@@ -47,7 +47,7 @@ public:
     gameState *getParent() const {return this->parent; };
     void setParent(gameState *parent) {this->parent = parent; };
     
-    std::vector<gameState*> getChildren() const;
+    std::vector<gameState*> getChildren();
     
     int getScore() const {return score; };
     void setScore(int s) {this->score = s; };

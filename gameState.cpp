@@ -3,32 +3,32 @@
 #include <iomanip>
 #include <algorithm>
 #include <random>
-#include <chrono>
 #include <tuple>
 #include "gameState.hpp"
 #include "inversionsCounter.hpp"
 
 gameState::gameState(int dimension) : dimension(dimension){
     int size = static_cast<int>(pow(dimension, 2));
+    
     // Generate new starting board until its solvable
+    
+    // Fill board with numbers
+    board = std::vector(dimension, std::vector<int>(dimension,0));
+    std::vector<int> board1d;
+    for (size_t i = 0; i < size; i++)
+        board1d.push_back(i);
     do{
-
-        // Fill board with numbers
-        board = std::vector(dimension, std::vector<int>(dimension,0));
-        std::vector<int> board1d;
-        for (size_t i = 0; i < size; i++){
-            board1d.push_back(i);
-        }
-
+        std::vector<int> board1d_solvable = board1d;
+        
         // Shuffle the board
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::shuffle(board1d.begin(), board1d.end(), std::default_random_engine(seed)); 
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(board1d_solvable.begin(), board1d_solvable.end(), g);
         for (size_t i = 0; i < size; i++){
             int row = i / dimension;
             int column = i % dimension;
-            board[row][column] = board1d[i];
+            board[row][column] = board1d_solvable[i];
         }
-
     } while (!isSolvable());
     std::tuple<int, int> emptyTile = findEmptyTilePos();
     emptyTileRow = get<0>(emptyTile);
@@ -71,14 +71,19 @@ std::vector<int> gameState::to1D() const{
     return board1D;
 }
 
-bool gameState::isSolvable() const{
+bool gameState::isSolvable() const {
     std::vector<int> flatBoard = to1D();
-    int inversions;
-    inversions = inversionCount(flatBoard);
-    return inversions % 2 == 0;
+    int inversions = inversionCount(flatBoard);
+
+    if (dimension % 2 != 0) {
+        return inversions % 2 == 0;
+    } else {
+        int emptyRowFromBottom = dimension - std::get<0>(findEmptyTilePos());
+        return (inversions + emptyRowFromBottom) % 2 == 0;
+    }
 }
 
-std::tuple<int, int> gameState::findEmptyTilePos() {
+std::tuple<int, int> gameState::findEmptyTilePos() const{
     std::tuple<int, int> emptyTile;
     for (size_t x = 0; x < dimension; x++){
         for (size_t y = 0; y < dimension; y++){
@@ -96,4 +101,12 @@ void gameState::setBoard(const std::vector<std::vector<int>> &board){
     std::tuple<int, int> emptyTile = findEmptyTilePos();
     setEmptyTileRow(get<0>(emptyTile));
     setEmptyTileColumn(get<1>(emptyTile));
+}
+
+std::vector<gameState*> gameState::getChildren(){
+    std::vector<gameState*> children;
+
+    //TODO: implement getChildren()
+
+    return children;
 }

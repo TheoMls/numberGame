@@ -1,0 +1,9 @@
+# Executables
+*.exe
+
+# IDE
+.idea/
+.vscode/
+
+# AI context
+WARP.md
