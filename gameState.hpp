@@ -12,6 +12,8 @@ private:
     int emptyTileColumn;
     int emptyTileRow;
 
+    int moves;
+
     //heuristic score
     int score;
 
@@ -34,6 +36,10 @@ public:
     
     const std::vector<std::vector<int>> &getBoard() const { return board; };
     void setBoard(const std::vector<std::vector<int>> &board);
+
+    int incrMoves() { return ++moves; }
+    void setMoves(int m) { this->moves = m; }
+    int getMoves() const { return moves; }
 
     int getDimension() const { return dimension; };
 

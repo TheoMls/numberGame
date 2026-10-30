@@ -6,8 +6,10 @@
 #include <tuple>
 #include "gameState.hpp"
 #include "inversionsCounter.hpp"
+#include <string>
 
-gameState::gameState(int dimension) : dimension(dimension){
+gameState::gameState(int dimension)
+    : dimension(dimension), moves(0), score(0) {
     int size = static_cast<int>(pow(dimension, 2));
     
     // Generate new starting board until its solvable
@@ -35,7 +37,8 @@ gameState::gameState(int dimension) : dimension(dimension){
     emptyTileColumn = get<1>(emptyTile);
 }
 
-gameState::gameState(std::vector<std::vector<int>> board): board(board){
+gameState::gameState(std::vector<std::vector<int>> board)
+    : board(board), moves(0), score(0) {
     dimension = board.size();
     std::tuple<int, int> emptyTile = findEmptyTilePos();
     emptyTileRow = get<0>(emptyTile);
@@ -73,6 +76,10 @@ std::vector<int> gameState::to1D() const{
 
 bool gameState::isSolvable() const {
     std::vector<int> flatBoard = to1D();
+
+    // Remove '0' so it doesn't affect the inversion count
+    flatBoard.erase(std::remove(flatBoard.begin(), flatBoard.end(), 0), flatBoard.end());
+
     int inversions = inversionCount(flatBoard);
 
     if (dimension % 2 != 0) {
@@ -111,18 +118,54 @@ std::vector<gameState*> gameState::getChildren(){
     return children;
 }
 
-bool moveUp() {
+bool gameState::moveUp() {
+    if (emptyTileRow == 0) {
+        return false;
+    }
+    std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow - 1][emptyTileColumn]);
+    emptyTileRow--;
     return true;
 }
 
-bool moveDown() {
+bool gameState::moveDown() {
+    if (emptyTileRow == dimension - 1) {
+        return false;
+    }
+    std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow + 1][emptyTileColumn]);
+    emptyTileRow++;
     return true;
 }
 
-bool moveLeft() {
+bool gameState::moveLeft() {
+    if (emptyTileColumn == 0) {
+        return false;
+    }
+    std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow][emptyTileColumn - 1]);
+    emptyTileColumn--;
     return true;
 }
 
-bool moveRight() {
+bool gameState::moveRight() {
+    if (emptyTileColumn == dimension - 1) {
+        return false;
+    }
+    std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow][emptyTileColumn + 1]);
+    emptyTileColumn++;
+    return true;
+}
+
+bool gameState::isGoal() const {
+    std::vector<int> flat = to1D();
+    int size = flat.size();
+
+    for (int i = 0; i < size; ++i) {
+        // Tile at index i must equal (i + 1) % size
+        // Indices 0 to size-2 map to 1 to size-1
+        // Index size-1 maps to 0 (the empty tile)
+        if (flat[i] != (i + 1) % size) {
+            return false;
+        }
+    }
+
     return true;
 }

@@ -25,13 +25,7 @@ char getValidDirection() {
             continue;
         }
 
-        // Reject multi-character input (e.g. "wa", "up")
-        if (input.length() > 1) {
-            std::cout << "Invalid input: Please enter a single character.\n";
-            continue;
-        }
-
-        char dir = std::tolower(input[0]);
+        char dir = std::tolower(input[input.length() - 1]);
 
         // Validate WASD keys
         if (dir == 'w' || dir == 'a' || dir == 's' || dir == 'd') {
@@ -49,18 +43,22 @@ void handleUserMove(gameState &state) {
 
         bool moved = false;
         switch (move) {
-            case 'w': moved = state.moveUp(); break;
-            case 's': moved = state.moveDown(); break;
-            case 'a': moved = state.moveLeft(); break;
-            case 'd': moved = state.moveRight(); break;
+            case 'w': moved = state.moveDown(); break;
+            case 's': moved = state.moveUp(); break;
+            case 'a': moved = state.moveRight(); break;
+            case 'd': moved = state.moveLeft(); break;
         }
 
-        if (!moved) {
+        if (moved) {
+            state.incrMoves();
+            std::cout << "\nMoves: " << state.getMoves() << "\n";
+        } else {
             std::cout << "Cannot move in that direction (boundary reached).\n";
         }
     }
 
-    std::cout << "\nCongratulations! You solved the puzzle!\n";
+    std::cout << "\nCongratulations! You solved the puzzle in " 
+              << state.getMoves() << " moves!\n";
     state.print();
 }
 
