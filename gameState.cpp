@@ -86,7 +86,7 @@ bool gameState::isSolvable() const {
         return inversions % 2 == 0;
     } else {
         int emptyRowFromBottom = dimension - std::get<0>(findEmptyTilePos());
-        return (inversions + emptyRowFromBottom) % 2 == 0;
+        return (inversions + emptyRowFromBottom - 1) % 2 == 0;
     }
 }
 
