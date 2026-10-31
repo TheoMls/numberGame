@@ -74,7 +74,7 @@ int main() {
             if (dimension < 2)
                 throw std::exception();
         } catch (...) {
-            std::cout << "Invalid input. Using default dimension 3.\n";
+            std::cout << "Invalid input. Using default dimension (3).\n";
             dimension = 3;
         }
     }

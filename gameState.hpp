@@ -14,7 +14,7 @@ private:
 
     int moves;
 
-    //heuristic score
+    // heuristic score
     int score;
 
     gameState *parent = nullptr;
