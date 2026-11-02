@@ -63,19 +63,4 @@ public:
     std::size_t hashCode() const; 
 };
 
-// Struct that gets a gametState hash from its pointer (needed for unordered_set) 
-struct gameStatePtrHash {
-    std::size_t operator()(const gameState *state) const {
-        return state ? state->hashCode() : 0;
-    }
-};
-
-// Struct that compares to gameState pointers by dereferencing them (needed for unordered_set) 
-struct gameStatePtrEqual {
-    bool operator()(const gameState *a, const gameState *b) const {
-        if (!a || !b) return a == b;
-        return *a == *b;
-    }
-};
-
 #endif //GAMESTATE_HPP

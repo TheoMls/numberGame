@@ -1,7 +1,10 @@
 #include <iostream>
-#include <cctype>
+#include <queue>
+#include <unordered_set>
 #include <string>
 #include "gameState.hpp"
+#include "solverUtils.hpp"
+#include "tests.hpp"
 
 char getValidDirection() {
     std::string input;
@@ -62,7 +65,13 @@ void handleUserMove(gameState &state) {
     state.print();
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    // Run component tests if "test" argument is supplied
+    if (argc > 1 && std::string(argv[1]) == "test") {
+        runTests();
+        return 0;
+    }
+
     std::cout << "HELLO :)\nGive dimension [default 3]: ";
     std::string userDim;
     std::getline(std::cin, userDim);
