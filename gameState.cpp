@@ -64,7 +64,6 @@ void gameState::print(){
         std::cout << "\b \n"<< newLine << "\n";
     }
     std::cout << std::endl;
-    std::cout << "Score: " << score << std::endl;
 }
 
 std::vector<int> gameState::to1D() const{

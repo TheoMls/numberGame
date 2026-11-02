@@ -111,10 +111,7 @@ void printSolutionPath(const AStarResult &result) {
 
         // Pause for 1 second between moves (skip pause after final goal state)
         if (i + 1 < result.path.size()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            
-            // Or use milliseconds for faster playback:
-            // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(400));
         }
     }
 

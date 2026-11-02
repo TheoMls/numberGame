@@ -40,7 +40,31 @@ char getValidDirection() {
     }
 }
 
+void handleAISolver(const gameState &startingBoard) {
+    std::cout << "\nSolving board using A* search algorithm...\n";
+
+    auto startTimer = std::chrono::high_resolution_clock::now();
+    AStarResult result = solveAStar(startingBoard);
+    auto endTimer = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
+
+    if (result.success) {
+        std::cout << "Search completed in " << duration.count() << " ms.\n";
+        printSolutionPath(result);
+
+        // Memory Cleanup for solution path
+        for (gameState* node : result.path) {
+            delete node;
+        }
+    } else {
+        std::cout << "\nFailed to find a solution path for this puzzle.\n";
+    }
+}
+
 void handleUserMove(gameState &state) {
+    gameState initialCopy = state;
+
     while (!state.isGoal()) {
         state.print();
         char move = getValidDirection();
@@ -64,27 +88,13 @@ void handleUserMove(gameState &state) {
     std::cout << "\nCongratulations! You solved the puzzle in " 
               << state.getMoves() << " moves!\n";
     state.print();
-}
 
-void handleAISolver(const gameState &startingBoard) {
-    std::cout << "\nSolving board using A* search algorithm...\n";
+    std::cout << "Would you like to see how AI solves this puzzle using A* search? (y/n): ";
+    std::string choice;
+    std::getline(std::cin, choice);
 
-    auto startTimer = std::chrono::high_resolution_clock::now();
-    AStarResult result = solveAStar(startingBoard);
-    auto endTimer = std::chrono::high_resolution_clock::now();
-
-    std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
-
-    if (result.success) {
-        std::cout << "Search completed in " << duration.count() << " ms.\n";
-        printSolutionPath(result);
-
-        // Memory Cleanup for solution path
-        for (gameState* node : result.path) {
-            delete node;
-        }
-    } else {
-        std::cout << "\nFailed to find a solution path for this puzzle.\n";
+    if (!choice.empty() && (choice[0] == 'y' || choice[0] == 'Y')) {
+        handleAISolver(initialCopy);
     }
 }
 
