@@ -193,3 +193,22 @@ void gameState::countManhattanDistance()
     }
     this->score = totalDistance;
 }
+
+bool gameState::operator==(const gameState &other) const {
+    if (this->dimension != other.dimension) {
+        return false;
+    }
+    return this->board == other.board;
+}
+
+std::size_t gameState::hashCode() const {
+    std::vector<int> flat = to1D();
+    std::size_t hash = 0;
+
+    std::hash<int> hasher;
+    for (int val : flat) {
+        hash ^= hasher(val) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+    }
+
+    return hash;
+}
