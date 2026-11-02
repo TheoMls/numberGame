@@ -35,6 +35,8 @@ gameState::gameState(int dimension)
     std::tuple<int, int> emptyTile = findEmptyTilePos();
     emptyTileRow = get<0>(emptyTile);
     emptyTileColumn = get<1>(emptyTile);
+
+    countManhattanDistance();
 }
 
 gameState::gameState(std::vector<std::vector<int>> board)
@@ -43,6 +45,7 @@ gameState::gameState(std::vector<std::vector<int>> board)
     std::tuple<int, int> emptyTile = findEmptyTilePos();
     emptyTileRow = get<0>(emptyTile);
     emptyTileColumn = get<1>(emptyTile);
+    countManhattanDistance();
 }
 
 void gameState::print(){
@@ -61,6 +64,8 @@ void gameState::print(){
         std::cout << "\b \n"<< newLine << "\n";
     }
     std::cout << std::endl;
+    countManhattanDistance();
+    std::cout << "Score: " << score << std::endl;
 }
 
 std::vector<int> gameState::to1D() const{
@@ -168,4 +173,23 @@ bool gameState::isGoal() const {
     }
 
     return true;
+}
+
+void gameState::countManhattanDistance()
+{
+    int totalDistance = 0;
+
+    for (int r = 0; r < dimension; ++r){
+        for (int c = 0; c < dimension; ++c){
+            int val = board[r][c];
+
+            if (val == 0) continue;
+
+            int targetRow = (val - 1) / dimension;
+            int targetCol = (val - 1) % dimension;
+
+            totalDistance += std::abs(r - targetRow) + std::abs(c - targetCol);
+        }
+    }
+    this->score = totalDistance;
 }

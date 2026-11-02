@@ -20,7 +20,6 @@ private:
     gameState *parent = nullptr;
 
     // internal heuristic helpers
-    void countOfPlace();
     void countManhattanDistance();
     void evaluate(int &heuristic);
 public:
@@ -54,8 +53,8 @@ public:
     
     std::vector<gameState*> getChildren();
     
-    int getScore() const {return score; };
-    void setScore(int s) {this->score = s; };
+    int getScore() const { return score; };
+    void setScore(int s) { this->score = s; };
 
     bool moveUp(), moveDown(), moveLeft(), moveRight();
     
