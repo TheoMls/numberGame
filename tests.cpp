@@ -104,16 +104,14 @@ void runTests() {
 
     openSet.push(&stateC);
     openSet.push(&stateA);
-    for (gameState* child : children) {
+    for (gameState* child : children)
         openSet.push(child);
-    }
 
     int minF = std::min(stateA.getMoves() + stateA.getScore(), 
                         stateC.getMoves() + stateC.getScore());
 
-    for (gameState* child : children) {
+    for (gameState* child : children)
         minF = std::min(minF, child->getMoves() + child->getScore());
-    }
 
     gameState* topNode = openSet.top();
     int topF = topNode->getMoves() + topNode->getScore();
@@ -133,9 +131,8 @@ void runTests() {
         failedTests++;
     }
 
-    for (gameState* child : children) {
+    for (gameState* child : children)
         delete child;
-    }
 
     // TEST 5: Full solveAStar Engine Execution
     std::cout << "[TEST 5] Testing solveAStar Engine...\n";
@@ -160,9 +157,8 @@ void runTests() {
     }
 
     // Clean up heap memory allocated by solver test
-    for (gameState* node : solverResult.path) {
+    for (gameState* node : solverResult.path)
         delete node;
-    }
 
     std::cout << "========================================\n";
     std::cout << "   ALL COMPONENT CHECKS COMPLETE!\n";

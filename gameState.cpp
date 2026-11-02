@@ -70,9 +70,8 @@ std::vector<int> gameState::to1D() const{
     std::vector<int> board1D;
     board1D.reserve(dimension*dimension);
     for (auto &row : board){
-        for (auto &&val : row){
+        for (auto &&val : row)
             board1D.push_back(val);
-        }
     }
     return board1D;
 }
@@ -85,9 +84,9 @@ bool gameState::isSolvable() const {
 
     int inversions = inversionCount(flatBoard);
 
-    if (dimension % 2 != 0) {
+    if (dimension % 2 != 0)
         return inversions % 2 == 0;
-    } else {
+    else {
         int emptyRowFromBottom = dimension - std::get<0>(findEmptyTilePos());
         return (inversions + emptyRowFromBottom - 1) % 2 == 0;
     }
@@ -97,9 +96,8 @@ std::tuple<int, int> gameState::findEmptyTilePos() const{
     std::tuple<int, int> emptyTile;
     for (int x = 0; x < dimension; x++){
         for (int y = 0; y < dimension; y++){
-            if (board[x][y] == 0) {
+            if (board[x][y] == 0)
                 emptyTile = std::make_tuple(x,y);   
-            }
         }
     }
     return emptyTile;
@@ -181,9 +179,8 @@ void gameState::countManhattanDistance()
 }
 
 bool gameState::operator==(const gameState &other) const {
-    if (this->dimension != other.dimension) {
+    if (this->dimension != other.dimension)
         return false;
-    }
     return this->board == other.board;
 }
 
@@ -192,9 +189,8 @@ std::size_t gameState::hashCode() const {
     std::size_t hash = 0;
 
     std::hash<int> hasher;
-    for (int val : flat) {
+    for (int val : flat)
         hash ^= hasher(val) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-    }
 
     return hash;
 }

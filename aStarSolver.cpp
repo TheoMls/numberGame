@@ -97,25 +97,23 @@ void printSolutionPath(const AStarResult &result) {
     std::cout << "\n========================================\n";
     std::cout << "         SOLUTION PATH STEPS            \n";
     std::cout << "========================================\n";
-    std::cout << "Total Moves Required: " << result.path.size() - 1 << "\n";
-    std::cout << "Total Nodes Expanded: " << result.nodesExpanded << "\n";
 
     for (size_t i = 0; i < result.path.size(); ++i) {
-        if (i == 0) {
+        if (i == 0)
             std::cout << "\n--- Step 0: Initial Board ---";
-        } else {
+        else
             std::cout << "\n--- Step " << i << " (Move " << result.path[i]->getMoves() << ") ---";
-        }
         
         result.path[i]->print();
 
-        // Pause for 1 second between moves (skip pause after final goal state)
-        if (i + 1 < result.path.size()) {
+        // Pause between moves
+        if (i + 1 < result.path.size())
             std::this_thread::sleep_for(std::chrono::milliseconds(400));
-        }
     }
 
     std::cout << "========================================\n";
     std::cout << "             PUZZLE SOLVED!             \n";
     std::cout << "========================================\n";
+    std::cout << "Total Nodes Expanded: " << result.nodesExpanded << "\n";
+    std::cout << "Total Moves Required: " << result.path.size() - 1 << "\n";
 }

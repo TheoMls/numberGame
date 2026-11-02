@@ -19,9 +19,8 @@ char getValidDirection() {
         if (start != std::string::npos) {
             size_t end = input.find_last_not_of(" \t\r\n");
             input = input.substr(start, end - start + 1);
-        } else {
+        } else
             input.clear();
-        }
 
         // Reject empty input
         if (input.empty()) {
@@ -32,9 +31,8 @@ char getValidDirection() {
         char dir = std::tolower(input[input.length() - 1]);
 
         // Validate WASD keys
-        if (dir == 'w' || dir == 'a' || dir == 's' || dir == 'd') {
+        if (dir == 'w' || dir == 'a' || dir == 's' || dir == 'd')
             return dir;
-        }
 
         std::cout << "Invalid direction! Use W, A, S, or D.\n";
     }
@@ -50,21 +48,20 @@ void handleAISolver(const gameState &startingBoard) {
     std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
 
     if (result.success) {
-        std::cout << "Search completed in " << duration.count() << " ms.\n";
         printSolutionPath(result);
+        std::cout << "Search completed in " << duration.count() << " ms.\n";
 
         // Memory Cleanup for solution path
-        for (gameState* node : result.path) {
+        for (gameState* node : result.path)
             delete node;
-        }
-    } else {
+    } else
         std::cout << "\nFailed to find a solution path for this puzzle.\n";
-    }
 }
 
 void handleUserMove(gameState &state) {
     gameState initialCopy = state;
 
+    auto startTimer = std::chrono::high_resolution_clock::now();
     while (!state.isGoal()) {
         state.print();
         char move = getValidDirection();
@@ -80,14 +77,16 @@ void handleUserMove(gameState &state) {
         if (moved) {
             state.incrMoves();
             std::cout << "\nMoves: " << state.getMoves() << "\n";
-        } else {
+        } else
             std::cout << "Cannot move in that direction (boundary reached).\n";
-        }
     }
+    auto endTimer = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
 
-    std::cout << "\nCongratulations! You solved the puzzle in " 
-              << state.getMoves() << " moves!\n";
     state.print();
+    std::cout << "\nCongratulations! You solved the puzzle\nin " 
+              << duration.count()/ 1000 << " s\nin "
+              << state.getMoves() << " moves!\n";
 
     std::cout << "Would you like to see how AI solves this puzzle using A* search? (y/n): ";
     std::string choice;
@@ -95,6 +94,9 @@ void handleUserMove(gameState &state) {
 
     if (!choice.empty() && (choice[0] == 'y' || choice[0] == 'Y')) {
         handleAISolver(initialCopy);
+        std::cout << "You took\n "
+                  << duration.count()/1000 << " s\nin "
+                  << state.getMoves() << " moves!\n";
     }
 }
 
@@ -131,11 +133,10 @@ int main(int argc, char* argv[]) {
     std::string modeChoice;
     std::getline(std::cin, modeChoice);
 
-    if (!modeChoice.empty() && modeChoice[0] == '2') {
+    if (!modeChoice.empty() && modeChoice[0] == '2')
         handleAISolver(startingBoard);
-    } else {
+    else
         handleUserMove(startingBoard);
-    }
 
     return 0;
 }
