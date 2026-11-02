@@ -5,8 +5,9 @@
 
 // Struct that gets a gameState hash from its pointer (needed for unordered_set)
 struct gameStatePtrHash {
-    std::size_t operator()(const gameState *state) const
+    std::size_t operator()(const gameState *state) const {
         return state ? state->hashCode() : 0;
+    }
 };
 
 // Struct that compares two gameState pointers by dereferencing them (needed for unordered_set)

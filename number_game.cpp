@@ -87,6 +87,8 @@ void handleUserMove(gameState &state) {
     std::cout << "\nCongratulations! You solved the puzzle\nin " 
               << duration.count()/ 1000 << " s\nin "
               << state.getMoves() << " moves!\n";
+    
+    if (state.getDimension() > 3) return; // AI on max 3x3 for now
 
     std::cout << "Would you like to see how AI solves this puzzle using A* search? (y/n): ";
     std::string choice;
@@ -94,7 +96,7 @@ void handleUserMove(gameState &state) {
 
     if (!choice.empty() && (choice[0] == 'y' || choice[0] == 'Y')) {
         handleAISolver(initialCopy);
-        std::cout << "You took\n "
+        std::cout << "You took\n"
                   << duration.count()/1000 << " s\nin "
                   << state.getMoves() << " moves!\n";
     }
@@ -127,16 +129,18 @@ int main(int argc, char* argv[]) {
 
     std::cout << "\nChoose Mode:\n";
     std::cout << "1. Play Manually (WASD)\n";
-    std::cout << "2. Solve automatically with AI (A* Search)\n";
+    std::cout << "2. Solve automatically with AI (only 3x3 for now)\n";
     std::cout << "Selection [default 1]: ";
 
     std::string modeChoice;
     std::getline(std::cin, modeChoice);
 
-    if (!modeChoice.empty() && modeChoice[0] == '2')
+    if (!modeChoice.empty() && modeChoice[0] == '2'){
+        if (dimension != 3) 
+            std::cout << "\nFor now AI only works on max 3x3\n";
+        startingBoard = gameState(3);
         handleAISolver(startingBoard);
-    else
+    } else
         handleUserMove(startingBoard);
-
     return 0;
 }
