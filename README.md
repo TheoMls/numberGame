@@ -44,13 +44,13 @@ g++ -std=c++17 number_game.cpp gameState.cpp tests.cpp aStarSolver.cpp -o number
 
 ## Usage
 
-### 1. Interactive Mode
+### Interactive Mode
 Run the executable directly to launch manual play or AI solver selection:
 ```cmd
 .\number_game.exe
 ```
 
-### 2. Component Testing Mode
+### Component Testing Mode
 Pass the `test` flag to execute all automated component checks:
 ```cmd
 .\number_game.exe test
