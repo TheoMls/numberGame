@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "gameState.hpp"
 #include "solverUtils.hpp"
+#include "aStarSolver.hpp"
 #include "tests.hpp"
 
 void runTests() {
@@ -15,7 +16,7 @@ void runTests() {
     std::cout << "   VERIFYING A* SEARCH COMPONENTS\n";
     std::cout << "========================================\n\n";
 
-    // 1. Setup Test Boards
+    // Setup Test Boards
     std::vector<std::vector<int>> boardLayoutA = {
         {1, 2, 3},
         {4, 0, 6},
@@ -99,15 +100,14 @@ void runTests() {
     std::cout << "[TEST 4] Testing CompareAStar Priority Queue Ordering...\n";
     std::priority_queue<gameState*, std::vector<gameState*>, CompareAStar> openSet;
 
-    //stateC.setMoves(10); 
-    
+    stateC.setMoves(10);
+
     openSet.push(&stateC);
     openSet.push(&stateA);
     for (gameState* child : children) {
         openSet.push(child);
     }
-    
-    // Compute expected minimum f(n) across ALL pushed states
+
     int minF = std::min(stateA.getMoves() + stateA.getScore(), 
                         stateC.getMoves() + stateC.getScore());
 
@@ -133,9 +133,35 @@ void runTests() {
         failedTests++;
     }
 
-    // Clean up heap allocated children memory
     for (gameState* child : children) {
         delete child;
+    }
+
+    // TEST 5: Full solveAStar Engine Execution
+    std::cout << "[TEST 5] Testing solveAStar Engine...\n";
+    AStarResult solverResult = solveAStar(stateA);
+
+    bool solverSuccess = solverResult.success && 
+                         !solverResult.path.empty() && 
+                         solverResult.path.back()->isGoal();
+
+    std::cout << " - Search returned success? (Expected: 1): " << solverResult.success << "\n";
+    std::cout << " - Total path steps: " << solverResult.path.size() << "\n";
+    std::cout << " - Nodes expanded: " << solverResult.nodesExpanded << "\n";
+    std::cout << " - Final state is goal? (Expected: 1): " 
+              << (solverResult.path.empty() ? 0 : solverResult.path.back()->isGoal()) << "\n";
+
+    if (solverSuccess) {
+        std::cout << "   >>> TEST 5 PASSED! <<<\n\n";
+        passedTests++;
+    } else {
+        std::cout << "   >>> TEST 5 FAILED! <<<\n\n";
+        failedTests++;
+    }
+
+    // Clean up heap memory allocated by solver test
+    for (gameState* node : solverResult.path) {
+        delete node;
     }
 
     std::cout << "========================================\n";

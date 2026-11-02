@@ -12,7 +12,9 @@ struct AStarResult {
 };
 
 // Solves the N-puzzle using A* search.
-// Returns an AStarResult containing the solution path and execution stats.
 AStarResult solveAStar(const gameState &startState);
+
+// Prints each step of the solution path from start to goal
+void printSolutionPath(const AStarResult &result);
 
 #endif // ASTARSOLVER_HPP

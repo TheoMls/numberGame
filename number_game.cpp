@@ -1,10 +1,11 @@
 #include <iostream>
-#include <queue>
-#include <unordered_set>
+#include <cctype>
 #include <string>
+#include <chrono>
 #include "gameState.hpp"
 #include "solverUtils.hpp"
 #include "tests.hpp"
+#include "aStarSolver.hpp"
 
 char getValidDirection() {
     std::string input;
@@ -65,6 +66,28 @@ void handleUserMove(gameState &state) {
     state.print();
 }
 
+void handleAISolver(const gameState &startingBoard) {
+    std::cout << "\nSolving board using A* search algorithm...\n";
+
+    auto startTimer = std::chrono::high_resolution_clock::now();
+    AStarResult result = solveAStar(startingBoard);
+    auto endTimer = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
+
+    if (result.success) {
+        std::cout << "Search completed in " << duration.count() << " ms.\n";
+        printSolutionPath(result);
+
+        // Memory Cleanup for solution path
+        for (gameState* node : result.path) {
+            delete node;
+        }
+    } else {
+        std::cout << "\nFailed to find a solution path for this puzzle.\n";
+    }
+}
+
 int main(int argc, char* argv[]) {
     // Run component tests if "test" argument is supplied
     if (argc > 1 && std::string(argv[1]) == "test") {
@@ -89,8 +112,20 @@ int main(int argc, char* argv[]) {
     }
 
     gameState startingBoard = gameState(dimension);
-    
-    handleUserMove(startingBoard);
+
+    std::cout << "\nChoose Mode:\n";
+    std::cout << "1. Play Manually (WASD)\n";
+    std::cout << "2. Solve automatically with AI (A* Search)\n";
+    std::cout << "Selection [default 1]: ";
+
+    std::string modeChoice;
+    std::getline(std::cin, modeChoice);
+
+    if (!modeChoice.empty() && modeChoice[0] == '2') {
+        handleAISolver(startingBoard);
+    } else {
+        handleUserMove(startingBoard);
+    }
 
     return 0;
 }
