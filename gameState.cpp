@@ -64,7 +64,6 @@ void gameState::print(){
         std::cout << "\b \n"<< newLine << "\n";
     }
     std::cout << std::endl;
-    countManhattanDistance();
     std::cout << "Score: " << score << std::endl;
 }
 
@@ -115,47 +114,35 @@ void gameState::setBoard(const std::vector<std::vector<int>> &board){
     setEmptyTileColumn(get<1>(emptyTile));
 }
 
-std::vector<gameState*> gameState::getChildren(){
-    std::vector<gameState*> children;
-
-    //TODO: implement getChildren()
-
-    return children;
-}
-
 bool gameState::moveUp() {
-    if (emptyTileRow == 0) {
-        return false;
-    }
+    if (emptyTileRow == 0) return false;
     std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow - 1][emptyTileColumn]);
     emptyTileRow--;
+    countManhattanDistance();
     return true;
 }
 
 bool gameState::moveDown() {
-    if (emptyTileRow == dimension - 1) {
-        return false;
-    }
+    if (emptyTileRow == dimension - 1) return false;
     std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow + 1][emptyTileColumn]);
     emptyTileRow++;
+    countManhattanDistance();
     return true;
 }
 
 bool gameState::moveLeft() {
-    if (emptyTileColumn == 0) {
-        return false;
-    }
+    if (emptyTileColumn == 0) return false;
     std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow][emptyTileColumn - 1]);
     emptyTileColumn--;
+    countManhattanDistance();
     return true;
 }
 
 bool gameState::moveRight() {
-    if (emptyTileColumn == dimension - 1) {
-        return false;
-    }
+    if (emptyTileColumn == dimension - 1) return false;
     std::swap(board[emptyTileRow][emptyTileColumn], board[emptyTileRow][emptyTileColumn + 1]);
     emptyTileColumn++;
+    countManhattanDistance();
     return true;
 }
 
@@ -211,4 +198,46 @@ std::size_t gameState::hashCode() const {
     }
 
     return hash;
+}
+
+std::vector<gameState*> gameState::getChildren() {
+    std::vector<gameState*> children;
+
+    if (emptyTileRow > 0) {
+        gameState* child = new gameState(*this);
+        if (child->moveUp()) {
+            child->setParent(this);
+            child->setMoves(this->getMoves() + 1);
+            children.push_back(child);
+        } else delete child;
+    }
+
+    if (emptyTileRow < dimension - 1) {
+        gameState* child = new gameState(*this);
+        if (child->moveDown()) {
+            child->setParent(this);
+            child->setMoves(this->getMoves() + 1);
+            children.push_back(child);
+        } else delete child;
+    }
+
+    if (emptyTileColumn > 0) {
+        gameState* child = new gameState(*this);
+        if (child->moveLeft()) {
+            child->setParent(this);
+            child->setMoves(this->getMoves() + 1);
+            children.push_back(child);
+        } else delete child;
+    }
+
+    if (emptyTileColumn < dimension - 1) {
+        gameState* child = new gameState(*this);
+        if (child->moveRight()) {
+            child->setParent(this);
+            child->setMoves(this->getMoves() + 1);
+            children.push_back(child);
+        } else delete child;
+    }
+
+    return children;
 }
