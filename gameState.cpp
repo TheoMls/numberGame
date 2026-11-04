@@ -258,39 +258,60 @@ std::size_t gameState::hashCode() const {
 std::vector<gameState*> gameState::getChildren() {
     std::vector<gameState*> children;
 
+    // Helper lambda to check if a candidate child matches the parent board layout
+    auto isReverseMove = [this](const gameState* child) -> bool {
+        return this->parent != nullptr && child->getBoard() == this->parent->getBoard();
+    };
+
     if (emptyTileRow > 0) {
         gameState* child = new gameState(*this);
         if (child->moveUp()) {
-            child->setParent(this);
-            child->setMoves(this->getMoves() + 1);
-            children.push_back(child);
+            if (isReverseMove(child)) {
+                delete child;
+            } else {
+                child->setParent(this);
+                child->setMoves(this->getMoves() + 1);
+                children.push_back(child);
+            }
         } else delete child;
     }
 
     if (emptyTileRow < dimension - 1) {
         gameState* child = new gameState(*this);
         if (child->moveDown()) {
-            child->setParent(this);
-            child->setMoves(this->getMoves() + 1);
-            children.push_back(child);
+            if (isReverseMove(child)) {
+                delete child;
+            } else {
+                child->setParent(this);
+                child->setMoves(this->getMoves() + 1);
+                children.push_back(child);
+            }
         } else delete child;
     }
 
     if (emptyTileColumn > 0) {
         gameState* child = new gameState(*this);
         if (child->moveLeft()) {
-            child->setParent(this);
-            child->setMoves(this->getMoves() + 1);
-            children.push_back(child);
+            if (isReverseMove(child)) {
+                delete child;
+            } else {
+                child->setParent(this);
+                child->setMoves(this->getMoves() + 1);
+                children.push_back(child);
+            }
         } else delete child;
     }
 
     if (emptyTileColumn < dimension - 1) {
         gameState* child = new gameState(*this);
         if (child->moveRight()) {
-            child->setParent(this);
-            child->setMoves(this->getMoves() + 1);
-            children.push_back(child);
+            if (isReverseMove(child)) {
+                delete child;
+            } else {
+                child->setParent(this);
+                child->setMoves(this->getMoves() + 1);
+                children.push_back(child);
+            }
         } else delete child;
     }
 

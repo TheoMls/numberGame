@@ -4,10 +4,57 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
+#include <string>
 #include "gameState.hpp"
 #include "solverUtils.hpp"
 #include "aStarSolver.hpp"
 #include "tests.hpp"
+
+// Reusable benchmark runner for any board layout
+bool benchmarkBoard(const gameState &testState, int numTries, const std::string &label) {
+    std::cout << "Running " << numTries << " test(s) on " << label << "...\n";
+
+    if (!testState.isSolvable()) {
+        std::cout << "Error: " << label << " layout is NOT solvable!\n\n";
+        return false;
+    }
+
+    double totalTimeMs = 0.0;
+    int successfulRuns = 0;
+    AStarResult lastResult;
+
+    for (int run = 0; run < numTries; ++run) {
+        auto startTimer = std::chrono::high_resolution_clock::now();
+        lastResult = solveAStar(testState);
+        auto endTimer = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
+        totalTimeMs += duration.count();
+
+        std::cout << " - Run " << (run + 1) << "/" << numTries << ": ";
+        printFormattedTime(duration.count());
+        std::cout << " | Expanded: " << lastResult.nodesExpanded;
+
+        if (lastResult.success) {
+            std::cout << " | Path steps: " << (lastResult.path.size() - 1) << "\n";
+            successfulRuns++;
+        } else {
+            std::cout << " | FAILED\n";
+        }
+
+        // Clean up heap memory for search path
+        for (gameState* node : lastResult.path) {
+            delete node;
+        }
+    }
+
+    double avgTimeMs = totalTimeMs / numTries;
+    std::cout << "Average " << label << " search completion: ";
+    printFormattedTime(avgTimeMs);
+    std::cout << "\n\n";
+
+    return (successfulRuns == numTries);
+}
 
 void runTests() {
     int passedTests = 0;
@@ -135,9 +182,8 @@ void runTests() {
     for (gameState* child : children)
         delete child;
 
-    // TEST 5: Full solveAStar Engine Execution & Benchmarking
-    std::cout << "[TEST 5] Testing solveAStar Engine...\n";
-
+    // TEST 5: 3x3 solveAStar Benchmarking
+    std::cout << "[TEST 5] Testing 3x3 solveAStar Engine...\n";
     std::vector<std::vector<int>> boardLayoutD = {
         {0, 8, 7},
         {5, 4, 6},
@@ -145,55 +191,31 @@ void runTests() {
     };
     gameState stateD(boardLayoutD);
 
-    if (!stateD.isSolvable()) {
-        std::cout << "Not solvable test board\n";
-        failedTests++;
+    if (benchmarkBoard(stateD, 20, "3x3 board")) {
+        std::cout << "   >>> TEST 5 PASSED! <<<\n\n";
+        passedTests++;
     } else {
-        double durationSum = 0;
-        int numOfExamples = 20;
-        AStarResult lastResult;
+        std::cout << "   >>> TEST 5 FAILED! <<<\n\n";
+        failedTests++;
+    }
 
-        std::cout << "Running " << numOfExamples << " tests...\n";
+    // TEST 6: 4x4 solveAStar Benchmarking
+    std::cout << "[TEST 6] Testing 4x4 solveAStar Engine...\n";
+    std::vector<std::vector<int>> boardLayout4x4 = {
+        { 6,  2,  3,  5},
+        { 0,  1,  9, 13},
+        {10, 15, 12,  7},
+        { 8, 14, 11,  4}
+    };
+    gameState state4x4(boardLayout4x4);
 
-        for (int i = 0; i < numOfExamples; i++) {
-            auto startTimer = std::chrono::high_resolution_clock::now();
-            lastResult = solveAStar(stateD);
-            auto endTimer = std::chrono::high_resolution_clock::now();
-
-            std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
-            durationSum += duration.count();
-
-            // Delete path nodes for intermediate runs to prevent memory leaks
-            if (i < numOfExamples - 1) {
-                for (gameState* node : lastResult.path)
-                    delete node;
-            }
-        }
-
-        double avgDuration = durationSum / numOfExamples;
-        std::cout << "Average search completion in " << avgDuration << " ms.\n";
-
-        bool solverSuccess = lastResult.success && 
-                             !lastResult.path.empty() && 
-                             lastResult.path.back()->isGoal();
-
-        std::cout << " - Search returned success? (Expected: 1): " << lastResult.success << "\n";
-        std::cout << " - Total path steps: " << lastResult.path.size() << "\n";
-        std::cout << " - Nodes expanded: " << lastResult.nodesExpanded << "\n";
-        std::cout << " - Final state is goal? (Expected: 1): " 
-                  << (lastResult.path.empty() ? 0 : lastResult.path.back()->isGoal()) << "\n";
-
-        if (solverSuccess) {
-            std::cout << "   >>> TEST 5 PASSED! <<<\n\n";
-            passedTests++;
-        } else {
-            std::cout << "   >>> TEST 5 FAILED! <<<\n\n";
-            failedTests++;
-        }
-
-        // Clean up final path pointers
-        for (gameState* node : lastResult.path)
-            delete node;
+    int numOfExamples4x4 = 5;
+    if (benchmarkBoard(state4x4, numOfExamples4x4, "4x4 board")) {
+        std::cout << "   >>> TEST 6 PASSED! <<<\n\n";
+        passedTests++;
+    } else {
+        std::cout << "   >>> TEST 6 FAILED! <<<\n\n";
+        failedTests++;
     }
 
     std::cout << "========================================\n";

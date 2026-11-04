@@ -3,6 +3,14 @@
 
 #include "gameState.hpp"
 
+inline void printFormattedTime(double ms) {
+    if (ms >= 1000.0)
+        std::cout << (ms / 1000.0) << " s";
+    else
+        std::cout << ms << " ms";
+}
+
+
 // Struct that gets a gameState hash from its pointer (needed for unordered_set)
 struct gameStatePtrHash {
     std::size_t operator()(const gameState *state) const {

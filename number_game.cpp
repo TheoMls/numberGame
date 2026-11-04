@@ -49,7 +49,9 @@ void handleAISolver(const gameState &startingBoard) {
 
     if (result.success) {
         printSolutionPath(result);
-        std::cout << "Search completed in " << duration.count() << " ms.\n";
+        std::cout << "Search completed in ";
+        printFormattedTime(duration.count());
+        std::cout << ".\n";
 
         // Memory Cleanup for solution path
         for (gameState* node : result.path)
