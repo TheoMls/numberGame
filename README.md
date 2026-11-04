@@ -1,6 +1,6 @@
 # N-Puzzle Solver (C++)
 
-A modular, high-performance C++ implementation of the classic **N-Puzzle** game (8-puzzle, 15-puzzle, etc.) featuring interactive manual gameplay and an optimal **A* Search Algorithm*\* solver.
+A modular, high-performance C++ implementation of the classic **N-Puzzle** game (8-puzzle, 15-puzzle, etc.) featuring interactive manual gameplay and an optimal **A\* Search Algorithm** solver.
 
 ## Features
 
@@ -8,7 +8,7 @@ A modular, high-performance C++ implementation of the classic **N-Puzzle** game 
 
 * **Solvability Validation:** Generates only solvable starting boards by counting inversions using an $O(N \log N)$ Merge-Sort counting algorithm.
 
-* **Advanced A* Search Engine:*\* Uses the **Manhattan Distance** combined with the **Linear Conflicts** heuristic to drastically prune the search space and compute minimal solution paths efficiently.
+* **Advanced A\* Search Engine:** Uses the **Manhattan Distance** combined with the **Linear Conflicts** heuristic to drastically prune the search space and compute minimal solution paths efficiently.
 
 * **Search Optimizations:** Implements reverse-move pruning during node expansion and caps AI execution at 4x4 grids to guarantee safe memory bounds.
 
