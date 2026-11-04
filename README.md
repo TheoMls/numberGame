@@ -74,10 +74,10 @@ Pass the `test` flag to execute all automated component checks and A\* performan
 
 ## Controls (Manual Play)
 
-* **W**: Move tile Up (vacant slot moves Down)
+* **W**: Move tile Up
 
-* **S**: Move tile Down (vacant slot moves Up)
+* **S**: Move tile Down
 
-* **A**: Move tile Left (vacant slot moves Right)
+* **A**: Move tile Left
 
-* **D**: Move tile Right (vacant slot moves Left)
+* **D**: Move tile Right
