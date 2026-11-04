@@ -9,6 +9,15 @@
 AStarResult solveAStar(const gameState &startState) {
     AStarResult result;
 
+    if (startState.getDimension() > MAX_AI_DIMENSION) {
+        std::cout << "\n[Error] Board dimension (" << startState.getDimension() 
+                  << "x" << startState.getDimension() 
+                  << ") exceeds maximum AI solver limit (" 
+                  << MAX_AI_DIMENSION << "x" << MAX_AI_DIMENSION << ").\n";
+        result.success = false;
+        return result;
+    }
+
     // If the starting board is already the goal
     if (startState.isGoal()) {
         result.success = true;
@@ -108,7 +117,7 @@ void printSolutionPath(const AStarResult &result) {
 
         // Pause between moves
         if (i + 1 < result.path.size())
-            std::this_thread::sleep_for(std::chrono::milliseconds(400));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     std::cout << "========================================\n";

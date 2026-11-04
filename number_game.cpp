@@ -81,14 +81,15 @@ void handleUserMove(gameState &state) {
             std::cout << "Cannot move in that direction (boundary reached).\n";
     }
     auto endTimer = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duration = endTimer - startTimer;
+    std::chrono::duration<double> durationInSeconds = endTimer - startTimer;
+    std::cout << durationInSeconds.count() << " s\n";
 
     state.print();
     std::cout << "\nCongratulations! You solved the puzzle\nin " 
-              << duration.count()/ 1000 << " s\nin "
+              << durationInSeconds.count() << " s\nin "
               << state.getMoves() << " moves!\n";
     
-    if (state.getDimension() > 3) return; // AI on max 3x3 for now
+    if (state.getDimension() > MAX_AI_DIMENSION) return;
 
     std::cout << "Would you like to see how AI solves this puzzle using A* search? (y/n): ";
     std::string choice;
@@ -97,13 +98,12 @@ void handleUserMove(gameState &state) {
     if (!choice.empty() && (choice[0] == 'y' || choice[0] == 'Y')) {
         handleAISolver(initialCopy);
         std::cout << "You took\n"
-                  << duration.count()/1000 << " s\nin "
+                  << durationInSeconds.count() << " s\nin "
                   << state.getMoves() << " moves!\n";
     }
 }
 
 int main(int argc, char* argv[]) {
-    // Run component tests if "test" argument is supplied
     if (argc > 1 && std::string(argv[1]) == "test") {
         runTests();
         return 0;
@@ -117,8 +117,7 @@ int main(int argc, char* argv[]) {
     if (!userDim.empty()) {
         try {
             dimension = std::stoi(userDim);
-            if (dimension < 2)
-                throw std::exception();
+            if (dimension < 2) throw std::exception();
         } catch (...) {
             std::cout << "Invalid input. Using default dimension (3).\n";
             dimension = 3;
@@ -129,18 +128,25 @@ int main(int argc, char* argv[]) {
 
     std::cout << "\nChoose Mode:\n";
     std::cout << "1. Play Manually (WASD)\n";
-    std::cout << "2. Solve automatically with AI (only 3x3 for now)\n";
+    std::cout << "2. Solve automatically with AI (A* Search)\n";
     std::cout << "Selection [default 1]: ";
 
     std::string modeChoice;
     std::getline(std::cin, modeChoice);
 
-    if (!modeChoice.empty() && modeChoice[0] == '2'){
-        if (dimension != 3) 
-            std::cout << "\nFor now AI only works on max 3x3\n";
-        startingBoard = gameState(3);
-        handleAISolver(startingBoard);
-    } else
+    if (!modeChoice.empty() && modeChoice[0] == '2') {
+        if (dimension > MAX_AI_DIMENSION) {
+            std::cout << "\nAI Solver is disabled for dimensions larger than " 
+                      << MAX_AI_DIMENSION << "x" << MAX_AI_DIMENSION 
+                      << " due to search space complexity.\n";
+            std::cout << "Switching to Manual Play mode instead...\n";
+            handleUserMove(startingBoard);
+        } else {
+            handleAISolver(startingBoard);
+        }
+    } else {
         handleUserMove(startingBoard);
+    }
+
     return 0;
 }

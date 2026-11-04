@@ -159,14 +159,13 @@ bool gameState::isGoal() const {
     return true;
 }
 
-void gameState::countManhattanDistance()
-{
+void gameState::countManhattanDistance() {
     int totalDistance = 0;
 
-    for (int r = 0; r < dimension; ++r){
-        for (int c = 0; c < dimension; ++c){
+    // Standard Manhattan Distance
+    for (int r = 0; r < dimension; ++r) {
+        for (int c = 0; c < dimension; ++c) {
             int val = board[r][c];
-
             if (val == 0) continue;
 
             int targetRow = (val - 1) / dimension;
@@ -175,7 +174,68 @@ void gameState::countManhattanDistance()
             totalDistance += std::abs(r - targetRow) + std::abs(c - targetCol);
         }
     }
-    this->score = totalDistance;
+
+    // Linear Conflicts
+    int linearConflicts = 0;
+
+    // Row Linear Conflicts
+    for (int r = 0; r < dimension; ++r) {
+        for (int c1 = 0; c1 < dimension; ++c1) {
+            int val1 = board[r][c1];
+            if (val1 == 0) continue;
+
+            int targetRow1 = (val1 - 1) / dimension;
+            int targetCol1 = (val1 - 1) % dimension;
+
+            // Only check if tile 1 belongs in this row
+            if (targetRow1 != r) continue;
+
+            for (int c2 = c1 + 1; c2 < dimension; ++c2) {
+                int val2 = board[r][c2];
+                if (val2 == 0) continue;
+
+                int targetRow2 = (val2 - 1) / dimension;
+                int targetCol2 = (val2 - 1) % dimension;
+
+                // Conflict if tile 2 also belongs in this row and tile 1 is to the left of tile 2,
+                // but tile 1's goal position is to the right of tile 2's goal position
+                if (targetRow2 == r && targetCol1 > targetCol2) {
+                    linearConflicts++;
+                }
+            }
+        }
+    }
+
+    // Column Linear Conflicts
+    for (int c = 0; c < dimension; ++c) {
+        for (int r1 = 0; r1 < dimension; ++r1) {
+            int val1 = board[r1][c];
+            if (val1 == 0) continue;
+
+            int targetRow1 = (val1 - 1) / dimension;
+            int targetCol1 = (val1 - 1) % dimension;
+
+            // Only check if tile 1 belongs in this column
+            if (targetCol1 != c) continue;
+
+            for (int r2 = r1 + 1; r2 < dimension; ++r2) {
+                int val2 = board[r2][c];
+                if (val2 == 0) continue;
+
+                int targetRow2 = (val2 - 1) / dimension;
+                int targetCol2 = (val2 - 1) % dimension;
+
+                // Conflict if tile 2 also belongs in this column and tile 1 is above tile 2,
+                // but tile 1's goal position is below tile 2's goal position
+                if (targetCol2 == c && targetRow1 > targetRow2) {
+                    linearConflicts++;
+                }
+            }
+        }
+    }
+
+    // Each conflict forces at least 2 extra moves out of line and back
+    this->score = totalDistance + 2 * linearConflicts;
 }
 
 bool gameState::operator==(const gameState &other) const {

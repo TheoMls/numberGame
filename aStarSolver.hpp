@@ -5,6 +5,8 @@
 #include "gameState.hpp"
 #include "solverUtils.hpp"
 
+inline constexpr int MAX_AI_DIMENSION = 4;
+
 struct AStarResult {
     bool success = false;
     std::vector<gameState*> path; // Path from start state to goal
